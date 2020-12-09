@@ -57,24 +57,27 @@ export interface ApiRosterPaginated extends ApiArrayPaginated {
 
 export enum ApiRosterColumnType {
   String = 'string',
-  Boolean = 'boolean',
+  Number = 'number',
   Date = 'date',
   DateTime = 'datetime',
-  Number = 'number',
+  Boolean = 'boolean',
+  Enum = 'enum',
 }
 
 export function rosterColumnTypeDisplayName(type: ApiRosterColumnType) {
   switch (type) {
     case ApiRosterColumnType.Boolean:
-      return 'Boolean';
+      return 'Yes/No';
     case ApiRosterColumnType.Number:
       return 'Number';
     case ApiRosterColumnType.String:
-      return 'String';
+      return 'Text';
+    case ApiRosterColumnType.Enum:
+      return 'Option';
     case ApiRosterColumnType.Date:
       return 'Date';
     case ApiRosterColumnType.DateTime:
-      return 'Date/Time';
+      return 'Date and Time';
     default:
       return 'Unknown';
   }
@@ -105,6 +108,18 @@ export interface ColumnInfo {
   displayName: string
 }
 
+export interface ApiRosterCustomColumnConfig {}
+
+export interface ApiRosterStringColumnConfig extends ApiRosterCustomColumnConfig {
+  multiline?: boolean
+}
+
+export type ApiRosterEnumColumnConfigOption = { id: string, label: string };
+
+export interface ApiRosterEnumColumnConfig extends ApiRosterCustomColumnConfig {
+  options?: ApiRosterEnumColumnConfigOption[]
+}
+
 export interface ApiRosterColumnInfo extends ColumnInfo {
   type: ApiRosterColumnType,
   pii: boolean,
@@ -112,6 +127,7 @@ export interface ApiRosterColumnInfo extends ColumnInfo {
   custom: boolean,
   required: boolean,
   updatable: boolean,
+  config: ApiRosterCustomColumnConfig,
 }
 
 export interface ApiRosterEntry {

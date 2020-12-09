@@ -19,6 +19,7 @@ export enum QueryFieldType {
   Date = 'date',
   DateTime = 'datetime',
   Number = 'number',
+  Enum = 'enum',
 }
 
 export type QueryOp = '=' | '<>' | '~' | '>' | '<' | 'startsWith' | 'endsWith' | 'in' | 'between';

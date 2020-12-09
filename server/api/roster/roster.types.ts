@@ -1,3 +1,5 @@
+import { CustomColumnConfig } from "./custom-roster-column.model";
+
 export interface CustomColumns {
   [key: string]: CustomColumnValue
 }
@@ -6,10 +8,11 @@ export type CustomColumnValue = string | boolean | number | null;
 
 export enum RosterColumnType {
   String = 'string',
-  Boolean = 'boolean',
+  Number = 'number',
   Date = 'date',
   DateTime = 'datetime',
-  Number = 'number',
+  Boolean = 'boolean',
+  Enum = 'enum',
 }
 
 export interface RosterColumnInfo {
@@ -21,5 +24,6 @@ export interface RosterColumnInfo {
   custom: boolean,
   required: boolean,
   updatable: boolean,
+  config?: CustomColumnConfig
 }
 

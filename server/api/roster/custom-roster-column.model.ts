@@ -45,4 +45,12 @@ export class CustomRosterColumn extends BaseEntity {
     default: false,
   })
   required!: boolean;
+
+  @Column('json', {
+    nullable: false,
+    default: '{}',
+  })
+  config!: CustomColumnConfig;
 }
+
+export interface CustomColumnConfig {}

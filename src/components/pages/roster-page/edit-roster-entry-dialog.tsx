@@ -17,7 +17,9 @@ import MomentUtils from '@date-io/moment';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import useStyles from './edit-roster-entry-dialog.style';
-import { ApiRosterColumnInfo, ApiRosterColumnType, ApiRosterEntry } from '../../../models/api-response';
+import {
+  ApiRosterColumnInfo, ApiRosterColumnType, ApiRosterEntry, ApiRosterEnumColumnConfig, ApiRosterStringColumnConfig,
+} from '../../../models/api-response';
 import { ButtonWithSpinner } from '../../buttons/button-with-spinner';
 import { EditableBooleanTable } from '../../tables/editable-boolean-table';
 import { UnitSelector } from '../../../selectors/unit.selector';
@@ -181,6 +183,7 @@ export const EditRosterEntryDialog = (props: EditRosterEntryDialogProps) => {
 
   const buildTextInput = (columnInfo: ApiRosterColumnInfo) => {
     const numberField = columnInfo.type === ApiRosterColumnType.Number;
+    const multiline = columnInfo.type === ApiRosterColumnType.String && (columnInfo?.config as ApiRosterStringColumnConfig)?.multiline === true;
     return (
       <TextField
         className={classes.textField}
@@ -188,6 +191,9 @@ export const EditRosterEntryDialog = (props: EditRosterEntryDialogProps) => {
         label={columnInfo.displayName}
         disabled={formDisabled || (existingRosterEntry && !columnInfo.updatable)}
         required={columnInfo.required}
+        multiline={multiline}
+        rows={multiline ? 3 : 1}
+        rowsMax={multiline ? 6 : 1}
         onChange={numberField ? onNumberFieldChanged(columnInfo.name) : onTextFieldChanged(columnInfo.name)}
         value={rosterEntry[columnInfo.name] || ''}
         type={numberField ? 'number' : 'text'}
@@ -231,6 +237,43 @@ export const EditRosterEntryDialog = (props: EditRosterEntryDialogProps) => {
     );
   };
 
+  const buildEnumInput = (columnInfo: ApiRosterColumnInfo) => {
+    const options = (columnInfo.config as ApiRosterEnumColumnConfig)?.options?.slice() ?? [];
+
+    if (!columnInfo.required) {
+      options.unshift({ id: '', label: '' });
+    }
+
+    return (
+      <>
+        <InputLabel id={`${columnInfo.name}-label`} className={classes.inputLabel} shrink>
+          {columnInfo.displayName}
+        </InputLabel>
+        <Select
+          className={classes.selectField}
+          id={columnInfo.name}
+          labelId={`${columnInfo.name}-label`}
+          native
+          disabled={formDisabled || (existingRosterEntry && !columnInfo.updatable)}
+          label={columnInfo.displayName}
+          value={rosterEntry[columnInfo.name] ?? ''}
+          onChange={event => {
+            updateRosterEntryProperty(columnInfo.name, event?.target.value as string);
+          }}
+          required={columnInfo.required}
+          inputProps={{
+            name: `${columnInfo.name}`,
+            id: `${columnInfo.name}-select`,
+          }}
+        >
+          {options.map(({ id, label }) => (
+            <option key={id} value={id}>{label}</option>
+          ))}
+        </Select>
+      </>
+    );
+  };
+
   const buildInputFields = () => {
     const columns = rosterColumnInfos?.filter(columnInfo => {
       return columnInfo.type !== 'boolean' && hiddenEditFields.indexOf(columnInfo.name) < 0;
@@ -251,6 +294,8 @@ export const EditRosterEntryDialog = (props: EditRosterEntryDialogProps) => {
         return buildDateTimeInput(column);
       case ApiRosterColumnType.Date:
         return buildDateInput(column);
+      case ApiRosterColumnType.Enum:
+        return buildEnumInput(column);
       default:
         console.warn(`Unhandled column type found while creating input fields: ${column.type}`);
         return '';

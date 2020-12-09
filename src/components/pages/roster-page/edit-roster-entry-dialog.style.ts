@@ -45,4 +45,9 @@ export default makeStyles(() => createStyles({
     backgroundColor: '#F0F1F1',
     padding: '15px 35px',
   },
+  inputLabel: {
+    color: '#3D4551',
+    fontSize: 16,
+    fontWeight: 600,
+  },
 }));

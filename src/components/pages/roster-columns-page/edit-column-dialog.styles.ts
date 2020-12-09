@@ -1,7 +1,7 @@
-import { createStyles } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-export default makeStyles(() => createStyles({
+export default makeStyles((theme: Theme) => createStyles({
   root: {
     '& .MuiGrid-spacing-xs-3': {
       margin: '0px -12px',
@@ -27,6 +27,9 @@ export default makeStyles(() => createStyles({
     lineHeight: '24px',
     color: '#A9AEB1',
   },
+  optionsHeaderLabel: {
+    marginTop: theme.spacing(3),
+  },
   flagTableBorder: {
     border: '1px solid #71767a',
     borderRadius: '4px',
@@ -44,5 +47,14 @@ export default makeStyles(() => createStyles({
     justifyContent: 'center',
     backgroundColor: '#F0F1F1',
     padding: '15px 35px',
+  },
+  addEnumButton: {
+    borderColor: 'transparent',
+    marginTop: theme.spacing(2),
+  },
+  removeEnumButton: {
+    color: '#E41D3D',
+    fontWeight: 'bold',
+    padding: 7,
   },
 }));

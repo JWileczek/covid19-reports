@@ -40,6 +40,7 @@ import { AppState } from '../../../store';
 import {
   ApiRosterColumnInfo,
   ApiRosterColumnType,
+  ApiRosterEnumColumnConfig,
   ApiRosterEntry,
   ApiRosterPaginated,
 } from '../../../models/api-response';
@@ -48,7 +49,9 @@ import { EditRosterEntryDialog, EditRosterEntryDialogProps } from './edit-roster
 import { ButtonWithSpinner } from '../../buttons/button-with-spinner';
 import { Unit } from '../../../actions/unit.actions';
 import { UnitSelector } from '../../../selectors/unit.selector';
-import { QueryBuilder, QueryFieldType, QueryFilterState } from '../../query-builder/query-builder';
+import {
+  QueryBuilder, QueryFieldPickListItem, QueryFieldType, QueryFilterState,
+} from '../../query-builder/query-builder';
 import { formatMessage } from '../../../utility/errors';
 
 const unitColumn: ApiRosterColumnInfo = {
@@ -60,6 +63,7 @@ const unitColumn: ApiRosterColumnInfo = {
   type: ApiRosterColumnType.String,
   updatable: false,
   required: false,
+  config: {},
 };
 
 export const RosterPage = () => {
@@ -476,8 +480,18 @@ export const RosterPage = () => {
           <QueryBuilder
             fields={rosterColumnInfos
               .map(column => {
+                let items: QueryFieldPickListItem[] | undefined;
+                if (column.name === 'unit') {
+                  items = units.map(({ id, name }) => ({ label: name, value: id }));
+                } else if (column.type === ApiRosterColumnType.Enum) {
+                  const options = (column.config as ApiRosterEnumColumnConfig)?.options?.slice() ?? [];
+                  options.unshift({ id: '', label: '' });
+                  items = options.map(({ id, label }) => ({ label, value: id }));
+                } else {
+                  items = undefined;
+                }
                 return {
-                  items: column.name === 'unit' ? units.map(({ id, name }) => ({ label: name, value: id })) : undefined,
+                  items,
                   displayName: column.displayName,
                   name: column.name,
                   type: column.type as unknown as QueryFieldType,

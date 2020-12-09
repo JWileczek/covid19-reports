@@ -154,7 +154,6 @@ export class Roster extends BaseEntity {
     });
     return [...baseRosterColumns, ...customColumns];
   }
-
 }
 
 export const baseRosterColumns: RosterColumnInfo[] = [

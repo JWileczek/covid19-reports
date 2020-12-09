@@ -13,7 +13,7 @@ import {
 } from '../../util/error-types';
 import { BaseType, getOptionalParam, getRequiredParam } from '../../util/util';
 import { Org } from '../org/org.model';
-import { CustomRosterColumn } from './custom-roster-column.model';
+import { CustomColumnConfig, CustomRosterColumn } from './custom-roster-column.model';
 import { Unit } from '../unit/unit.model';
 import {
   CustomColumnValue,
@@ -461,6 +461,9 @@ function setCustomColumnFromBody(column: CustomRosterColumn, body: CustomColumnD
   if (body.required != null) {
     column.required = body.required;
   }
+  if (body.config != null) {
+    column.config = body.config;
+  }
 }
 
 function isActiveOnRoster(entry: Roster, date: Date) {
@@ -482,6 +485,7 @@ async function getColumnFromBody(org: Org, roster: Roster, row: RosterEntryData,
   switch (column.type) {
     case RosterColumnType.Date:
     case RosterColumnType.DateTime:
+    case RosterColumnType.Enum:
       paramType = 'string';
       break;
     default:
@@ -535,6 +539,7 @@ function getColumnFromCSV(roster: Roster, row: RosterFileRow, column: RosterColu
         value = dateFromString(stringValue);
         break;
       case RosterColumnType.Boolean:
+        // TODO: Do we want to update this for more truthy options? yes/no, y/n, 1/0?
         value = stringValue === 'true';
         break;
       default:
@@ -613,6 +618,7 @@ type CustomColumnData = {
   pii?: boolean,
   phi?: boolean,
   required?: boolean,
+  config?: CustomColumnConfig,
 };
 
 export default new RosterController();
