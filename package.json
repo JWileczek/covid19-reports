@@ -64,6 +64,7 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^7.0.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -85,6 +86,7 @@
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
     "concurrently": "^5.3.0",
+    "cypress": "^6.1.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^10.0.0",
     "eslint-plugin-import": "^2.22.0",
@@ -94,6 +96,7 @@
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",
     "openssl": "^1.1.0",
+    "start-server-and-test": "^1.11.6",
     "ts-node": "^9.0.0",
     "typescript": "^3.7.5"
   },
@@ -107,7 +110,11 @@
     "typeorm": "ts-node --project ./server/tsconfig.json ./node_modules/.bin/typeorm",
     "migration-create": "./migration-create.sh",
     "migration-generate": "./migration-generate.sh",
-    "migration-run": "./migration-run.sh"
+    "migration-run": "./migration-run.sh",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run --browser chrome --headless",
+    "test:e2e": "start-server-and-test start 3000 cypress",
+    "test:e2e:ci": "start-server-and-test start 3000 cypress:headless"
   },
   "eslintConfig": {
     "extends": "react-app"
